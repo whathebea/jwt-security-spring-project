@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,7 +28,9 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token).getBody();
     }
-
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername()).setIssuedAt(new java.util.Date(System.currentTimeMillis())).setExpiration(new java.util.Date(System.currentTimeMillis() + 9000)).signWith(getSecretKey(), SignatureAlgorithm.HS256).compact();
     }
